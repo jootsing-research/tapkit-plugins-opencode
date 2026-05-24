@@ -1,0 +1,34 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@jootsing-research/opencode-tapkit"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "mcp": {
+    "tapkit": {
+      "type": "remote",
+      "url": "https://mcp.tapkit.ai/mcp",
+      "enabled": true
+    }
+  },
+  "permission": {
+    "skill": {
+      "tapkit": "allow",
+      "tapkit-cli": "allow",
+      "clock": "allow",
+      "craigslist": "allow",
+      "facebook": "allow",
+      "hinge": "allow",
+      "instagram": "allow",
+      "linkedin": "allow",
+      "mail": "allow",
+      "reddit": "allow",
+      "telegram": "allow",
+      "tiktok": "allow",
+      "twitter": "allow",
+      "uber-eats": "allow",
+      "weather": "allow",
+      "whatsapp": "allow"
+    }
+  }
+}

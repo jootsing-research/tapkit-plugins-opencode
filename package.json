@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@jootsing-research/opencode-tapkit",
+  "version": "0.1.0",
+  "description": "OpenCode plugin and skills for controlling a physical iPhone through TapKit MCP.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "opencode-tapkit": "./scripts/setup.mjs"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "scripts/setup.mjs",
+    "opencode.json.example",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "sync:skills": "node scripts/sync-skills.mjs",
+    "setup:project": "node scripts/setup.mjs --project",
+    "setup:global": "node scripts/setup.mjs --global",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "opencode",
+    "tapkit",
+    "mcp",
+    "iphone",
+    "ios",
+    "automation",
+    "mobile"
+  ],
+  "author": {
+    "name": "Jootsing Research",
+    "email": "tj@jootsing.ai",
+    "url": "https://jootsing.ai"
+  },
+  "homepage": "https://tapkit.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jootsing-Research/tapkit-plugins-opencode.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@opencode-ai/plugin": ">=1.15.0"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "^1.15.10",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}
