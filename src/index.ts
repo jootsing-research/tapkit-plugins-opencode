@@ -1,3 +1,5 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Plugin } from "@opencode-ai/plugin";
 import { tool } from "@opencode-ai/plugin";
 
@@ -22,6 +24,57 @@ const SKILL_NAMES = [
   "weather",
   "whatsapp",
 ] as const;
+
+function packageSkillsDirectory(): string {
+  const distDirectory = path.dirname(fileURLToPath(import.meta.url));
+  return path.resolve(distDirectory, "..", "skills");
+}
+
+function appendUnique(values: unknown, value: string): string[] {
+  const list = Array.isArray(values)
+    ? values.filter((item): item is string => typeof item === "string")
+    : [];
+  return list.includes(value) ? list : [...list, value];
+}
+
+function configureTapKit(config: Record<string, any>, skillsDirectory: string): void {
+  config.mcp = {
+    ...(typeof config.mcp === "object" && config.mcp ? config.mcp : {}),
+    [TAPKIT_MCP_NAME]: {
+      type: "remote",
+      url: TAPKIT_MCP_URL,
+      enabled: true,
+      ...((config.mcp?.[TAPKIT_MCP_NAME] &&
+      typeof config.mcp[TAPKIT_MCP_NAME] === "object")
+        ? config.mcp[TAPKIT_MCP_NAME]
+        : {}),
+    },
+  };
+
+  const skills = typeof config.skills === "object" && config.skills
+    ? config.skills
+    : {};
+  config.skills = {
+    ...skills,
+    paths: appendUnique(skills.paths, skillsDirectory),
+  };
+
+  if (typeof config.permission === "string") return;
+
+  config.permission = {
+    ...(typeof config.permission === "object" && config.permission ? config.permission : {}),
+  };
+
+  const skillPermissions = typeof config.permission.skill === "object" &&
+    config.permission.skill
+    ? config.permission.skill
+    : {};
+
+  config.permission.skill = { ...skillPermissions };
+  for (const skill of SKILL_NAMES) {
+    config.permission.skill[skill] ??= "allow";
+  }
+}
 
 function guide(topic?: string): string {
   const normalized = topic?.toLowerCase().trim();
@@ -75,12 +128,14 @@ function guide(topic?: string): string {
 }
 
 export const TapKitOpenCodePlugin: Plugin = async ({ client }) => {
+  const skillsDirectory = packageSkillsDirectory();
+
   try {
     await client.app.log({
       body: {
         service: "tapkit",
         level: "info",
-        message: `TapKit OpenCode plugin loaded. MCP server: ${TAPKIT_MCP_URL}`,
+        message: `TapKit OpenCode plugin loaded. MCP server: ${TAPKIT_MCP_URL}. Skills: ${skillsDirectory}`,
       },
     });
   } catch {
@@ -88,6 +143,10 @@ export const TapKitOpenCodePlugin: Plugin = async ({ client }) => {
   }
 
   return {
+    config: async (config) => {
+      configureTapKit(config as Record<string, any>, skillsDirectory);
+    },
+
     tool: {
       tapkit_help: tool({
         description: "Show TapKit setup, MCP, skill, and iPhone-control workflow guidance.",

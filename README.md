@@ -26,6 +26,14 @@ npm run build
 
 This checkout already includes a local OpenCode config, a local plugin at `.opencode/plugins/tapkit.ts`, and OpenCode-discoverable skills at `.opencode/skills`.
 
+To install this local package into another OpenCode project before publishing:
+
+```sh
+opencode plugin /absolute/path/to/tapkit-plugins-opencode
+```
+
+Do not run `opencode plugin tapkit`: `tapkit` is the TapKit CLI package on npm, not this OpenCode plugin package.
+
 Use the setup script in dry-run mode to inspect what it would install into another project:
 
 ```sh
